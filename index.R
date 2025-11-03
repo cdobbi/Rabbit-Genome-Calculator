@@ -1,5 +1,9 @@
 # rabbit_genome.R
 
+# Welcome message
+cat("Welcome to Rabbit Coat Color Predictor!\n")
+
+
 # Input: Parent genotypes
 doe <- "Aa"
 buck <- "aa"
