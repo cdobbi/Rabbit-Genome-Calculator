@@ -1,10 +1,13 @@
 # rabbit_genome.R
+suppressPackageStartupMessages(library(dplyr))
 
 # Welcome message
+cat("\n")
 cat("Welcome to Rabbit Coat Color Predictor!\n")
-
-
+cat("This program predicts the coat color of rabbit offspring based on parent genotypes.\n") # nolint: line_length_linter.
+cat("\n")
 # Input: Parent genotypes
+rabbit_sex <- readline(prompt = "Is this rabbit a buck or a doe? ")
 doe <- "Aa"
 buck <- "aa"
 
