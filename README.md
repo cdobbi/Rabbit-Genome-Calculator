@@ -1,35 +1,33 @@
-# Rabbit-Coat-Calculator
-A comprehensive R-based tool for predicting rabbit coat color and pattern outcomes based on Mendelian genetic inheritance rules. This calculator allows rabbit breeders and genetics enthusiasts to input detailed genetic information for both sire (father) and dam (mother) rabbits and receive predictions for 10 likely offspring patterns.
+# Rabbit Coat Calculator
 
-# Overview
+## Description
+A simple Shiny app (rudimentary web form) for calculating rabbit coat costs. Demonstrates R programming features as per assignment: output to screen, multiple datatypes (numeric, character, logical, list, dataframe), loops with lists, dataframes, and CSV handling. All code is commented for beginners.
 
-{Important! Do not say in this section that this is college assignment. Talk about what you are trying to accomplish as a software engineer to further your learning.}
+## Installation
+- Install R and RStudio.
+- Install Shiny: `install.packages("shiny")`.
+- Place files in this directory.
 
-{Provide a description of the software that you wrote to demonstrate the R language.}
+## Usage
+- Run `app.R` in RStudio or via `shiny::runApp()`.
+- Opens a browser with a simple form: Enter rabbit type and quantity, click "Calculate Cost".
+- Results display on screen, and CSV is updated.
 
-{Describe your purpose for writing this software.}
+## Features Demonstrated
+- **Output**: `print()` and Shiny text output.
+- **Datatypes**: Numeric (prices), character (types), logical (checks), list (features), dataframe (tables).
+- **Loop**: For-loop over a list.
+- **Dataframes**: Created and manipulated.
+- **CSV**: Read/write operations.
+- **Comments**: Every function/line explained briefly.
 
-{Provide a link to your YouTube demonstration. It should be a 4-5 minute demo of the software running and a walkthrough of the code. Focus should be on sharing what you learned about the language syntax.}
+## Requirements Met
+- Multiple functions in R.
+- All basic requirements.
+- Additional: CSV incorporation.
+- Documented code.
 
-[Software Demo Video](http://youtube.link.goes.here)
-
-# Development Environment
-
-{Describe the tools that you used to develop the software}
-
-{Describe the programming language that you used and any libraries.}
-
-# Useful Websites
-
-{Make a list of websites that you found helpful in this project}
-
-- [Web Site Name](http://url.link.goes.here)
-- [Web Site Name](http://url.link.goes.here)
-
-# Future Work
-
-{Make a list of things that you need to fix, improve, and add in the future.}
-
-- Item 1
-- Item 2
-- Item 3
+## Learning Resources
+- "R Tutorial" on YouTube.
+- Official R docs for datatypes and dataframes.
+- Ask AI: "how to use Shiny for simple forms in R".
