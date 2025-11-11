@@ -2,19 +2,32 @@ locus,option_text,genotype
 family,1. Full — C (CC),CC
 family,2. Chinchilla — c(chd) (cchdcchd),cchdcchd
 family,3. Seal — ch (chch),chch
-family,4. Sable — c(y) (cycy),cycy
-family,5. Himalayan — c(h) (cccc),cccc
+family,4. Himalayan — c(h) (cccc),cccc
+family,5. Sable — c(y) (cycy),cycy
 family,6. Ruby-Eyed-White — c (cc),cc
-color,1. Black (self),BB
-color,2. Black (self, carries chocolate),Bb
-color,3. Chocolate (self),bb
-color,4. Black otter,BB
-color,5. Chocolate otter,bb
-color,6. Black tortoiseshell,BB
-color,7. Chocolate tortoiseshell,bb
-color,8. Chestnut (agouti),BB
-color,9. Orange (agouti),Bb
-color,10. Chocolate agouti,bb
+color,1. Black [self],BB
+color,2. Chocolate [self],bb
+color,3. Blue [self],dd BB
+color,4. Lilac [self],dd bb
+color,5. Black Tortoiseshell,BB O-
+color,6. Chocolate Tortoiseshell,bb O-
+color,7. Blue Tortoiseshell,dd BB O-
+color,8. Lilac Tortoiseshell,dd bb O-
+color,9. Black otter,BB
+color,10. Chocolate otter,bb
+color,11. Blue otter,dd BB
+color,12. Lilac otter,dd bb
+color,13. Tort otter (orange),BB O-
+color,14. Chocolate orange otter,bb O-
+color,15. Fawn otter,bb
+color,16. Lilac fawn otter,dd bb
+color,17. Chestnut [agouti],BB
+color,18. Cinnamon (chocolate agouti),bb
+color,19. Opal (blue agouti),dd BB
+color,20. Umber (lilac agouti),dd bb
+color,21. Orange [agouti],BB
+color,22. Fawn (cream),bb
+color,23. Lilac fawn,dd bb
 agouti,1. Agouti,AA
 agouti,2. Solid,aa
 steel_harlequin,1. Steel — Es/Es,EsEs
