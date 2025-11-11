@@ -100,6 +100,15 @@ get_color_genotype <- function(choice) {
   }
 }
 
+# Genotype mappings (hardcoded)
+steel_harlequin_genotypes <- c("EsEs", "Esej")
+broken_genotypes <- c("EnEn", "Enen")
+vienna_genotypes <- c("VV", "Vv")
+dutch_genotypes <- c("DuDu", "Dudu")
+silvering_genotypes <- c("SiSi", "Sisi")
+wideband_genotypes <- c("WW", "Ww")
+lutino_genotypes <- c("PP", "Pp")
+
 # ----- Collect C-locus (color family) selections -----
 display_menu("Doe", "color family", family_options)
 doe_family_choice <- as.integer(readline("Type a number: "))
