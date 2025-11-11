@@ -1,5 +1,4 @@
 library(dplyr) # load the dplyr helper toolkit so we can use functions like count(), mutate(), select(), etc.
-library(googlesheets4) # for Google Sheets as simple cloud DB
 
 # Attribution Statement: I used AI assistance to help write individual lines of R code, but I worked through each one carefully—asking questions. I renamed variables, studied the syntax, naming conventions, and control flow to ensure I understood the meaning of every word and the logic behind it. The overall concept, structure, and application to animal husbandry are entirely my own design. I may not be writing code fully on my own yet, but I hope this calculator represents what I’ve learned and how I’ve applied it.
 
@@ -80,11 +79,11 @@ cat("****************************************************\n\n")
 cat("This calculator predicts the top 10 coat\n colors based on parent pairings.\n\n")
 
 # ----- Load all genetic data from Google Sheets (cloud DB) -----
-gs4_auth()  # User authentication (additional requirement)
-sheet_url <- "https://docs.google.com/spreadsheets/d/1iosMDfix6Hc_pr5yu70yfi09s175OzrNg3Otws2sDmY/edit?usp=sharing"  # Replace with your sheet URL
+# gs4_auth()  # User authentication (additional requirement)
+# sheet_url <- "https://docs.google.com/spreadsheets/d/1iosMDfix6Hc_pr5yu70yfi09s175OzrNg3Otws2sDmY/edit?usp=sharing"  # Replace with your sheet URL
 
 # Retrieve all data (CRUD: retrieve)
-genetic_data <- read_sheet(sheet_url)
+# genetic_data <- read_sheet(sheet_url)
 
 # Parse into lists for menus (includes all color families and colors from sheet)
 family_options <- genetic_data %>% filter(locus == "family") %>% pull(option_text)
@@ -411,24 +410,3 @@ demonstrate_process <- function() {  # demonstrate_process is the function’s n
 
 # Call the demo function at the end
 demonstrate_process()  # demonstrate_process is a function call to show subprocess messaging.
-
-# ----- Cloud DB integration with Google Sheets -----
-# Authenticate once (user auth requirement)
-gs4_auth()  # Prompts Google login
-
-# Sheet URL (replace with your shared Google Sheet URL)
-sheet_url <- "https://docs.google.com/spreadsheets/d/1iosMDfix6Hc_pr5yu70yfi09s175OzrNg3Otws2sDmY/edit?usp=sharing"
-
-# Insert data (CRUD: insert)
-sample_result <- data.frame(family = "Full", color = "Black", percentage = 50.0)
-sheet_append(sheet_url, sample_result)
-
-# Retrieve data (CRUD: retrieve)
-data <- read_sheet(sheet_url)
-print(data)
-
-# Modify data (CRUD: modify) - Update a cell
-range_write(sheet_url, data.frame(percentage = 60.0), range = "C2")  # Example: Update row 2, column C
-
-# Delete data (CRUD: delete) - Clear a range
-range_clear(sheet_url, range = "A2:C2")  # Example: Clear row 2
