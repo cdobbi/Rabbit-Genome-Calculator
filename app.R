@@ -1,4 +1,6 @@
 library(dplyr) # load the dplyr helper toolkit so we can use functions like count(), mutate(), select(), etc.
+library(googlesheets4) # for Google Sheets as simple cloud DB
+
 # Attribution Statement: I used AI assistance to help write individual lines of R code, but I worked through each one carefully—asking questions. I renamed variables, studied the syntax, naming conventions, and control flow to ensure I understood the meaning of every word and the logic behind it. The overall concept, structure, and application to animal husbandry are entirely my own design. I may not be writing code fully on my own yet, but I hope this calculator represents what I’ve learned and how I’ve applied it.
 
 # R is designed around vectorized operations, meaning functions or operations can be applied to an entire vector at once without needing a loop which makes R code very efficient for data analysis.
@@ -118,6 +120,26 @@ buck_pattern_label <- if (!is.na(buck_pattern_choice) && buck_pattern_choice %in
 cat("\n")
 
 # ----- Collect C-locus (color family) selections -----
+# ----- Load genetic data from cloud database -----
+# Connect to cloud DB (replace with your credentials)
+con <- dbConnect(RMySQL::MySQL(), 
+                 dbname = "rabbit_genetics", 
+                 host = "your-cloud-db-host", 
+                 port = 3306, 
+                 user = "your-username", 
+                 password = "your-password")
+
+# Query for color family options (fetched dynamically instead of hardcoded)
+family_options_query <- dbGetQuery(con, "SELECT option_text FROM genetic_options WHERE locus = 'family'")
+family_options <- family_options_query$option_text  # e.g., c("1. Full — C (CC)", "2. Chinchilla — c(chd) (cchdcchd)", ...)
+
+# Query for color genotypes (fetched dynamically)
+color_genotypes_query <- dbGetQuery(con, "SELECT genotype FROM genetic_options WHERE locus = 'color'")
+color_genotypes <- color_genotypes_query$genotype  # e.g., c("BB", "Bb", "bb", ...)
+
+# Close connection after fetching
+dbDisconnect(con)
+
 family_options <- c(  # c() is a built-in function that creates a vector by combining the listed values (strings here).
   "  1. Full — C (CC)",
   "  2. Chinchilla — c(chd) (cchdcchd)",
@@ -286,3 +308,238 @@ demonstrate_process <- function() {  # demonstrate_process is the function’s n
 
 # Call the demo function at the end
 demonstrate_process()  # demonstrate_process is a function call to show subprocess messaging.
+
+# ----- Cloud DB integration with Google Sheets -----
+# Authenticate once (user auth requirement)
+gs4_auth()  # Prompts Google login
+
+# Sheet URL (replace with your shared Google Sheet URL)
+sheet_url <- "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit"
+
+# Insert data (CRUD: insert)
+sample_result <- data.frame(family = "Full", color = "Black", percentage = 50.0)
+sheet_append(sheet_url, sample_result)
+
+# Retrieve data (CRUD: retrieve)
+data <- read_sheet(sheet_url)
+print(data)
+
+# Modify data (CRUD: modify) - Update a cell
+range_write(sheet_url, data.frame(percentage = 60.0), range = "C2")  # Example: Update row 2, column C
+
+# Delete data (CRUD: delete) - Clear a range
+range_clear(sheet_url, range = "A2:C2")  # Example: Clear row 2
+
+# ----- Load all genetic data from Google Sheets (cloud DB) -----
+gs4_auth()  # User authentication (additional requirement)
+sheet_url <- "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit"  # Replace with your sheet URL
+
+# Retrieve all data (CRUD: retrieve)
+genetic_data <- read_sheet(sheet_url)
+
+# Parse into lists for menus (includes all color families and colors from sheet)
+family_options <- genetic_data %>% filter(locus == "family") %>% pull(option_text)  # All: Full, Chinchilla, Seal, Sable, Himalayan, Ruby-Eyed White
+color_options <- genetic_data %>% filter(locus == "color") %>% pull(option_text)  # All: Black (self), Black (carries chocolate), etc.
+
+# Genotype mappings (add more as needed)
+steel_harlequin_genotypes <- genetic_data %>% filter(locus == "steel_harlequin") %>% pull(genotype)
+broken_genotypes <- genetic_data %>% filter(locus == "broken") %>% pull(genotype)
+vienna_genotypes <- genetic_data %>% filter(locus == "vienna") %>% pull(genotype)
+dutch_genotypes <- genetic_data %>% filter(locus == "dutch") %>% pull(genotype)
+silvering_genotypes <- genetic_data %>% filter(locus == "silvering") %>% pull(genotype)
+wideband_genotypes <- genetic_data %>% filter(locus == "wideband") %>% pull(genotype)
+lutino_genotypes <- genetic_data %>% filter(locus == "lutino") %>% pull(genotype)
+
+# ----- Collect new pattern selections -----
+display_menu("Doe", "steel/harlequin", steel_harlequin_options)
+doe_steel_choice <- as.integer(readline("Type a number: "))
+doe_steel <- switch(doe_steel_choice, "Es", "ej", "Invalid")
+
+display_menu("Buck", "steel/harlequin", steel_harlequin_options)
+buck_steel_choice <- as.integer(readline("Type a number: "))
+buck_steel <- switch(buck_steel_choice, "Es", "ej", "Invalid")
+
+display_menu("Doe", "broken", broken_options)
+doe_broken_choice <- as.integer(readline("Type a number: "))
+doe_broken <- switch(doe_broken_choice, "brbr", "br", "Invalid")
+
+display_menu("Buck", "broken", broken_options)
+buck_broken_choice <- as.integer(readline("Type a number: "))
+buck_broken <- switch(buck_broken_choice, "brbr", "br", "Invalid")
+
+display_menu("Doe", "vienna", vienna_options)
+doe_vienna_choice <- as.integer(readline("Type a number: "))
+doe_vienna <- switch(doe_vienna_choice, "vivi", "vi", "Invalid")
+
+display_menu("Buck", "vienna", vienna_options)
+buck_vienna_choice <- as.integer(readline("Type a number: "))
+buck_vienna <- switch(buck_vienna_choice, "vivi", "vi", "Invalid")
+
+display_menu("Doe", "dutch", dutch_options)
+doe_dutch_choice <- as.integer(readline("Type a number: "))
+doe_dutch <- switch(doe_dutch_choice, "D", "d", "Invalid")
+
+display_menu("Buck", "dutch", dutch_options)
+buck_dutch_choice <- as.integer(readline("Type a number: "))
+buck_dutch <- switch(buck_dutch_choice, "D", "d", "Invalid")
+
+display_menu("Doe", "silvering", silvering_options)
+doe_silvering_choice <- as.integer(readline("Type a number: "))
+doe_silvering <- switch(doe_silvering_choice, "si", "s", "Invalid")
+
+display_menu("Buck", "silvering", silvering_options)
+buck_silvering_choice <- as.integer(readline("Type a number: "))
+buck_silvering <- switch(buck_silvering_choice, "si", "s", "Invalid")
+
+display_menu("Doe", "wideband", wideband_options)
+doe_wideband_choice <- as.integer(readline("Type a number: "))
+doe_wideband <- switch(doe_wideband_choice, "w", "ww", "Invalid")
+
+display_menu("Buck", "wideband", wideband_options)
+buck_wideband_choice <- as.integer(readline("Type a number: "))
+buck_wideband <- switch(buck_wideband_choice, "w", "ww", "Invalid")
+
+display_menu("Doe", "lutino", lutino_options)
+doe_lutino_choice <- as.integer(readline("Type a number: "))
+doe_lutino <- switch(doe_lutino_choice, "lulu", "lu", "Invalid")
+
+display_menu("Buck", "lutino", lutino_options)
+buck_lutino_choice <- as.integer(readline("Type a number: "))
+buck_lutino <- switch(buck_lutino_choice, "lulu", "lu", "Invalid")
+
+# ----- Generate offspring for new loci -----
+steel_off <- simulate_kits(doe_steel, buck_steel)
+broken_off <- simulate_kits(doe_broken, buck_broken)
+vienna_off <- simulate_kits(doe_vienna, buck_vienna)
+dutch_off <- simulate_kits(doe_dutch, buck_dutch)
+silvering_off <- simulate_kits(doe_silvering, buck_silvering)
+wideband_off <- simulate_kits(doe_wideband, buck_wideband)
+lutino_off <- simulate_kits(doe_lutino, buck_lutino)
+
+# ----- Update df to include new genotypes -----
+df <- data.frame(  # data.frame is a built-in function that creates a table from named columns.
+  Color_Genotype = rep(color_off, length.out = kit_count),  # rep is a built-in function that repeats the vector to reach length.out; length.out specifies the total length.
+  Agouti_Genotype = rep(agouti_off, length.out = kit_count),
+  Family_Genotype = rep(family_off, length.out = kit_count),
+  Pattern_Genotype = rep(pattern_off, length.out = kit_count),
+  Steel_Genotype = rep(steel_off, length.out = kit_count),
+  Broken_Genotype = rep(broken_off, length.out = kit_count),
+  Vienna_Genotype = rep(vienna_off, length.out = kit_count),
+  Dutch_Genotype = rep(dutch_off, length.out = kit_count),
+  Silvering_Genotype = rep(silvering_off, length.out = kit_count),
+  Wideband_Genotype = rep(wideband_off, length.out = kit_count),
+  Lutino_Genotype = rep(lutino_off, length.out = kit_count),
+  stringsAsFactors = FALSE  # literal logical value passed to data.frame to keep strings as character type.
+)
+
+# Add phenotype translations for new loci
+df$Steel_Phenotype <- dplyr::case_when(
+  df$Steel_Genotype == "EsEs" ~ "Steel",
+  df$Steel_Genotype == "Esej" ~ "Harlequin",
+  TRUE ~ "Unknown"
+)
+df$Broken_Phenotype <- dplyr::case_when(
+  df$Broken_Genotype == "brbr" ~ "Broken",
+  df$Broken_Genotype == "br" ~ "Carrier",
+  TRUE ~ "Unknown"
+)
+df$Vienna_Phenotype <- dplyr::case_when(
+  df$Vienna_Genotype == "vivi" ~ "Vienna",
+  df$Vienna_Genotype == "vi" ~ "Carrier",
+  TRUE ~ "Unknown"
+)
+df$Dutch_Phenotype <- dplyr::case_when(
+  df$Dutch_Genotype == "D" ~ "Dutch",
+  df$Dutch_Genotype == "d" ~ "Carrier",
+  TRUE ~ "Unknown"
+)
+df$Silvering_Phenotype <- dplyr::case_when(
+  df$Silvering_Genotype == "si" ~ "Silvering",
+  df$Silvering_Genotype == "s" ~ "Carrier",
+  TRUE ~ "Unknown"
+)
+df$Wideband_Phenotype <- dplyr::case_when(
+  df$Wideband_Genotype == "w" ~ "Wideband",
+  df$Wideband_Genotype == "ww" ~ "Carrier",
+  TRUE ~ "Unknown"
+)
+df$Lutino_Phenotype <- dplyr::case_when(
+  df$Lutino_Genotype == "lulu" ~ "Lutino",
+  df$Lutino_Genotype == "lu" ~ "Carrier",
+  TRUE ~ "Unknown"
+)
+
+# ----- Update results to include new phenotypes -----
+results <- df %>%  # %>% is the pipe operator from dplyr (passes the left side as the first argument to the right side).
+  dplyr::mutate(  # mutate is a dplyr function that adds or modifies columns.
+    Kit = seq_len(dplyr::n()),  # seq_len generates a sequence from 1 to n; dplyr::n() returns the number of rows.
+    Family = Family_Phenotype,
+    Color = Color_Phenotype,
+    Pattern = unname(pattern_display_labels[Pattern_Phenotype]),  # unname removes names from the vector; [] is indexing.
+    Steel = Steel_Phenotype,
+    Broken = Broken_Phenotype,
+    Vienna = Vienna_Phenotype,
+    Dutch = Dutch_Phenotype,
+    Silvering = Silvering_Phenotype,
+    Wideband = Wideband_Phenotype,
+    Lutino = Lutino_Phenotype
+  ) %>%
+  dplyr::select(Kit, Family, Color, Pattern, Steel, Broken, Vienna, Dutch, Silvering, Wideband, Lutino)  # select is a dplyr function that keeps only specified columns.
+
+# Summarize how many kits fall into each outcome and compute percentages
+outcome_summary <- results %>%  # %>% is the pipe operator from dplyr.
+  dplyr::count(Family, Color, Pattern, Steel, Broken, Vienna, Dutch, Silvering, Wideband, Lutino, name = "Kits") %>%  # count is a dplyr function that groups and counts rows; name specifies the count column.
+  dplyr::mutate(Percentage = round((Kits / kit_count) * 100, 1)) %>%  # mutate adds a column; round is a built-in function that rounds numbers; / is division.
+  dplyr::arrange(dplyr::desc(Kits), Family, Color, Pattern, Steel, Broken, Vienna, Dutch, Silvering, Wideband, Lutino)  # arrange is a dplyr function that sorts rows; desc reverses order.
+
+# Sentence describing the parents using the captured labels
+parent_description <- sprintf(  # sprintf is a built-in function that formats strings with placeholders.
+  "Pairing of a %s '%s' doe and a %s '%s' buck produces:",
+  doe_color_label,
+  doe_pattern_label,
+  buck_color_label,
+  buck_pattern_label
+)
+
+# Save the kit table to CSV for convenience
+write.csv(results, "kit_results.csv", row.names = FALSE)  # write.csv is a built-in function that writes a data frame to a CSV file; row.names = FALSE omits row numbers.
+
+# Show detailed kit breakdown and summary
+cat("\nPredictions:\n")  # cat is a built-in function that prints text to the console.
+print(results)  # print is a built-in function that displays the data frame.
+cat("\n", parent_description, "\n", sep = "")  # cat is a built-in function that prints the description with newlines.
+print(outcome_summary)  # print is a built-in function that displays the summary table.
+cat("Your results have been saved to kit_results.csv file.\n")  # cat is a built-in function that prints the save message.
+
+# Each homologous chromosome carries one allele, so in a diploid rabbit you have two allele versions per gene
+# —one from the mother, one from the father. The combination of these alleles forms the genotype, 
+# which determines the phenotype, or visible trait, of the rabbit.
+
+# demonstrate_process: shows subprocess creation and messaging (additional requirement)
+demonstrate_process <- function() {  # demonstrate_process is the function’s name (an identifier bound with <- function(...)).
+  system("echo 'Process message: Simulation complete!'")  # system is a built-in function that runs a shell command; here it echoes a message via subprocess.
+}
+
+# Call the demo function at the end
+demonstrate_process()  # demonstrate_process is a function call to show subprocess messaging.
+
+# ----- Cloud DB integration with Google Sheets -----
+# Authenticate once (user auth requirement)
+gs4_auth()  # Prompts Google login
+
+# Sheet URL (replace with your shared Google Sheet URL)
+sheet_url <- "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit"
+
+# Insert data (CRUD: insert)
+sample_result <- data.frame(family = "Full", color = "Black", percentage = 50.0)
+sheet_append(sheet_url, sample_result)
+
+# Retrieve data (CRUD: retrieve)
+data <- read_sheet(sheet_url)
+print(data)
+
+# Modify data (CRUD: modify) - Update a cell
+range_write(sheet_url, data.frame(percentage = 60.0), range = "C2")  # Example: Update row 2, column C
+
+# Delete data (CRUD: delete) - Clear a range
+range_clear(sheet_url, range = "A2:C2")  # Example: Clear row 2
