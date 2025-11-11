@@ -78,67 +78,60 @@ cat("****************************************************\n")  # cat is a built-
 cat("🐇 Welcome to The Rabbit Genome Calculator!🧮\n") 
 cat("****************************************************\n\n")
 cat("This calculator predicts the top 10 coat\n colors based on parent pairings.\n\n")
-# ----- Collect pattern (En locus) selections -----
-pattern_options <- c(  # c() is a built-in function that creates a vector by combining the listed values (strings here).
-  "  1. Self (solid) — en/en",
-  "  2. Broken — En/en",
-  "  3. Charlie — En/En"
+# ----- Collect pattern selections -----
+pattern_options <- c(  # Updated with new patterns
+  "  1. Steel — Es/Es",
+  "  2. Harlequin — Es/ej",
+  "  3. Broken — En/En",
+  "  4. Carrier (Broken) — En/en",
+  "  5. Vienna — V/V",
+  "  6. Carrier (Vienna) — V/v",
+  "  7. Dutch — Du/Du",
+  "  8. Carrier (Dutch) — Du/du",
+  "  9. Silvering — Si/Si",
+  " 10. Carrier (Silvering) — Si/si",
+  " 11. Wideband — W/W",
+  " 12. Carrier (Wideband) — W/w",
+  " 13. Lutino — P/P",
+  " 14. Carrier (Lutino) — P/p"
 )
-pattern_narrative_labels <- c("Sport (self)", "Marked (broken)", "Charlie") # c() is a built-in function that creates a vector
-                                                                            # by combining the listed values (strings here).
-pattern_display_labels <- c("Self" = "Sport", "Broken" = "Marked", "Charlie" = "Charlie", "Unknown" = "Unknown")
-                    # c() is a built-in function that creates a named vector (key-value pairs).
-display_menu("Doe", "pattern", pattern_options)
-                    # display_menu is a function call that prints the menu for the doe (passing subject, descriptor, and options).
-doe_pattern_choice <- as.integer(readline("Type a number: "))
-                    # readline is a built-in function that reads a line from the console; as.integer converts the input string to an integer.
-                    doe_pattern <- switch(doe_pattern_choice,
-                        "ee",
-                        "Ee",
-                        "EE",
-                        "Invalid"
-                    )
-                    # switch is a built-in function that returns the value corresponding to the choice (1="ee", 2="Ee", etc.).
-doe_pattern_label <- if (!is.na(doe_pattern_choice) && doe_pattern_choice %in% seq_along(pattern_narrative_labels)) {  # if is a control structure for conditional execution; !is.na checks if not missing; %in% tests set membership; seq_along generates indices.
-  pattern_narrative_labels[doe_pattern_choice]  # [] is the indexing operator for vectors (accesses the element at doe_pattern_choice position).
-} else {            # The menu text shows “1.”, “2.”, etc., but the actual mapping happens in the code:
-                    # when you enter a number, functions like switch(doe_color_choice, ...) or
-                    # indexing (color_genotypes[choice]) pick the corresponding item by position—choice 1 gives the first entry,
-                    # choice 2 the second, and so on.
-  "Unknown pattern"  # literal string returned if condition is false.
-}
-cat("\n")  # cat is a built-in function that prints a newline to the console.
 
-display_menu("Buck", "pattern", pattern_options)  # repeat for the buck
+display_menu("Doe", "pattern", pattern_options)
+doe_pattern_choice <- as.integer(readline("Type a number: "))
+doe_pattern <- switch(doe_pattern_choice,
+    "EsEs", "Esej", "EnEn", "Enen", "VV", "Vv", "DuDu", "Dudu", "SiSi", "Sisi", "WW", "Ww", "PP", "Pp", "Invalid"
+)
+
+cat("\n")
+
+display_menu("Buck", "pattern", pattern_options)
 buck_pattern_choice <- as.integer(readline("Type a number: "))
-buck_pattern <- switch(buck_pattern_choice, "ee", "Ee", "EE", "Invalid")
-buck_pattern_label <- if (!is.na(buck_pattern_choice) && buck_pattern_choice %in% seq_along(pattern_narrative_labels)) {
-  pattern_narrative_labels[buck_pattern_choice]
-} else {
-  "Unknown pattern"
-}
+buck_pattern <- switch(buck_pattern_choice,
+    "EsEs", "Esej", "EnEn", "Enen", "VV", "Vv", "DuDu", "Dudu", "SiSi", "Sisi", "WW", "Ww", "PP", "Pp", "Invalid"
+)
+
 cat("\n")
 
 # ----- Collect C-locus (color family) selections -----
 # ----- Load genetic data from cloud database -----
 # Connect to cloud DB (replace with your credentials)
-con <- dbConnect(RMySQL::MySQL(), 
-                 dbname = "rabbit_genetics", 
-                 host = "your-cloud-db-host", 
-                 port = 3306, 
-                 user = "your-username", 
-                 password = "your-password")
+# con <- dbConnect(RMySQL::MySQL(), 
+#                  dbname = "rabbit_genetics", 
+#                  host = "your-cloud-db-host", 
+#                  port = 3306, 
+#                  user = "your-username", 
+#                  password = "your-password")
 
 # Query for color family options (fetched dynamically instead of hardcoded)
-family_options_query <- dbGetQuery(con, "SELECT option_text FROM genetic_options WHERE locus = 'family'")
-family_options <- family_options_query$option_text  # e.g., c("1. Full — C (CC)", "2. Chinchilla — c(chd) (cchdcchd)", ...)
+# family_options_query <- dbGetQuery(con, "SELECT option_text FROM genetic_options WHERE locus = 'family'")
+# family_options <- family_options_query$option_text  # e.g., c("1. Full — C (CC)", "2. Chinchilla — c(chd) (cchdcchd)", ...)
 
 # Query for color genotypes (fetched dynamically)
-color_genotypes_query <- dbGetQuery(con, "SELECT genotype FROM genetic_options WHERE locus = 'color'")
-color_genotypes <- color_genotypes_query$genotype  # e.g., c("BB", "Bb", "bb", ...)
+# color_genotypes_query <- dbGetQuery(con, "SELECT genotype FROM genetic_options WHERE locus = 'color'")
+# color_genotypes <- color_genotypes_query$genotype  # e.g., c("BB", "Bb", "bb", ...)
 
 # Close connection after fetching
-dbDisconnect(con)
+# dbDisconnect(con)
 
 family_options <- c(  # c() is a built-in function that creates a vector by combining the listed values (strings here).
   "  1. Full — C (CC)",
@@ -200,24 +193,23 @@ buck_color_label <- if (!is.na(buck_color_choice) && buck_color_choice %in% seq_
 cat("\n")
 
 # ----- Collect A-locus (agouti vs solid) selections -----
-agouti_options <- c("  1. Agouti", "  2. Solid")  # c() is a built-in function that creates a vector by combining the listed values (strings here).
-display_menu("Doe", "agouti pattern", agouti_options)  # display_menu is a function call that prints the menu for the doe (passing subject, descriptor, and options).
-doe_agouti_choice <- as.integer(readline("Type a number: "))  # readline is a built-in function that reads a line from the console; as.integer converts the input string to an integer.
-doe_agouti <- if (doe_agouti_choice == 1) "AA" else "aa"  # if is a control structure; == is equality comparison; else handles the alternative.
-cat("\n")  # cat is a built-in function that prints a newline to the console.
+agouti_options <- c("  1. Agouti", "  2. Solid")
+display_menu("Doe", "agouti pattern", agouti_options)
+doe_agouti_choice <- as.integer(readline("Type a number: "))
+doe_agouti <- if (doe_agouti_choice == 1) "AA" else "aa"
 
-display_menu("Buck", "agouti pattern", agouti_options)  # repeat for the buck
+cat("\n")
+
+display_menu("Buck", "agouti pattern", agouti_options)
 buck_agouti_choice <- as.integer(readline("Type a number: "))
 buck_agouti <- if (buck_agouti_choice == 1) "AA" else "aa"
+
 cat("\n")
 
 # ----- Simulation metadata -----
 kit_count <- 10  # literal numeric value assigned to kit_count (represents sample size).
 is_dominant <- TRUE  # literal logical value assigned to is_dominant (placeholder for rubric).
-traits <- list("Pattern", "Color Family", "Color", "Agouti")  # list is a built-in function that creates a list (ordered collection) from the values.
-for (trait in traits) {  # for is a loop control structure; in iterates over each element of traits.
-  cat("Trait:", trait, "\n")  # cat is a built-in function that prints text to the console; here it prints "Trait:" followed by the trait name and a newline.
-}
+traits <- list("Pattern", "Color Family", "Color", "Agouti")
 
 # ----- Generate offspring genotypes for each locus by calling simulate_kits -----
 color_off <- simulate_kits(doe_color, buck_color)  # simulate_kits is a function call that generates offspring genotypes for color.
@@ -228,7 +220,7 @@ pattern_off <- simulate_kits(doe_pattern, buck_pattern)  # simulate_kits is a fu
 # ----- Build a data frame (table) representing kits 1..10 -----
 df <- data.frame(  # data.frame is a built-in function that creates a table from named columns.
   Color_Genotype = rep(color_off, length.out = kit_count),  # rep is a built-in function that repeats the vector to reach length.out; length.out specifies the total length.
-  Agouti_Genotype = rep(agouti_off, length.out = kit_count),
+  Agouti_Genotype = rep(agouti_off, length.out = kit_count),  # rep is a built-in function that repeats the vector to reach length.out; length.out specifies the total length.
   Family_Genotype = rep(family_off, length.out = kit_count),
   Pattern_Genotype = rep(pattern_off, length.out = kit_count),
   stringsAsFactors = FALSE  # literal logical value passed to data.frame to keep strings as character type.
@@ -242,7 +234,7 @@ df$Color_Phenotype <- dplyr::case_when(  # case_when is a dplyr function that ap
   TRUE ~ "Unknown"  # TRUE is a literal logical value; ~ separates default case.
 )
 df$Agouti_Phenotype <- dplyr::case_when(  # case_when is a dplyr function that applies conditions to create a new column.
-  df$Agouti_Genotype %in% c("AA", "Aa") ~ "Agouti",  # %in% tests set membership; c() creates a vector for comparison.
+  df$Agouti_Genotype %in% c("AA", "Aa") ~ "Agouti",  # %in% is the set membership test; c() combines values into a vector.
   df$Agouti_Genotype == "aa" ~ "Solid",
   TRUE ~ "Unknown"
 )
@@ -255,27 +247,38 @@ df$Family_Phenotype <- dplyr::case_when(  # case_when is a dplyr function that a
   grepl("cc", df$Family_Genotype, ignore.case = TRUE) ~ "Ruby-Eyed White",
   TRUE ~ "Unknown"
 )
-df$Pattern_Phenotype <- dplyr::case_when(  # case_when is a dplyr function that applies conditions to create a new column.
-  df$Pattern_Genotype == "EE" ~ "Charlie",
-  df$Pattern_Genotype == "Ee" ~ "Broken",
-  df$Pattern_Genotype == "ee" ~ "Self",
+df$Pattern_Phenotype <- dplyr::case_when(  # Updated for new genotypes
+  df$Pattern_Genotype == "EsEs" ~ "Steel",
+  df$Pattern_Genotype == "Esej" ~ "Harlequin",
+  df$Pattern_Genotype == "EnEn" ~ "Broken",
+  df$Pattern_Genotype == "Enen" ~ "Carrier (Broken)",
+  df$Pattern_Genotype == "VV" ~ "Vienna",
+  df$Pattern_Genotype == "Vv" ~ "Carrier (Vienna)",
+  df$Pattern_Genotype == "DuDu" ~ "Dutch",
+  df$Pattern_Genotype == "Dudu" ~ "Carrier (Dutch)",
+  df$Pattern_Genotype == "SiSi" ~ "Silvering",
+  df$Pattern_Genotype == "Sisi" ~ "Carrier (Silvering)",
+  df$Pattern_Genotype == "WW" ~ "Wideband",
+  df$Pattern_Genotype == "Ww" ~ "Carrier (Wideband)",
+  df$Pattern_Genotype == "PP" ~ "Lutino",
+  df$Pattern_Genotype == "Pp" ~ "Carrier (Lutino)",
   TRUE ~ "Unknown"
 )
 
 # ----- Prepare table for printing -----
-results <- df %>%  # %>% is the pipe operator from dplyr (passes the left side as the first argument to the right side).
-  dplyr::mutate(  # mutate is a dplyr function that adds or modifies columns.
-    Kit = seq_len(dplyr::n()),  # seq_len generates a sequence from 1 to n; dplyr::n() returns the number of rows.
+results <- df %>% 
+  dplyr::mutate(
+    Kit = seq_len(dplyr::n()),
     Family = Family_Phenotype,
     Color = Color_Phenotype,
-    Pattern = unname(pattern_display_labels[Pattern_Phenotype])  # unname removes names from the vector; [] is indexing.
+    Pattern = Pattern_Phenotype  # Updated to use directly
   ) %>%
   dplyr::select(Kit, Family, Color, Pattern)  # select is a dplyr function that keeps only specified columns.
 
 # Summarize how many kits fall into each outcome and compute percentages
-outcome_summary <- results %>%  # %>% is the pipe operator from dplyr.
-  dplyr::count(Family, Color, Pattern, name = "Kits") %>%  # count is a dplyr function that groups and counts rows; name specifies the count column.
-  dplyr::mutate(Percentage = round((Kits / kit_count) * 100, 1)) %>%  # mutate adds a column; round is a built-in function that rounds numbers; / is division.
+outcome_summary <- results %>% 
+  dplyr::count(Family, Color, Pattern, name = "Kits") %>% 
+  dplyr::mutate(Percentage = round((Kits / kit_count) * 100, 1)) %>% 
   dplyr::arrange(dplyr::desc(Kits), Family, Color, Pattern)  # arrange is a dplyr function that sorts rows; desc reverses order.
 
 # Sentence describing the parents using the captured labels
@@ -314,7 +317,7 @@ demonstrate_process()  # demonstrate_process is a function call to show subproce
 gs4_auth()  # Prompts Google login
 
 # Sheet URL (replace with your shared Google Sheet URL)
-sheet_url <- "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit"
+sheet_url <- "https://docs.google.com/spreadsheets/d/1iosMDfix6Hc_pr5yu70yfi09s175OzrNg3Otws2sDmY/edit?usp=sharing"
 
 # Insert data (CRUD: insert)
 sample_result <- data.frame(family = "Full", color = "Black", percentage = 50.0)
@@ -332,7 +335,7 @@ range_clear(sheet_url, range = "A2:C2")  # Example: Clear row 2
 
 # ----- Load all genetic data from Google Sheets (cloud DB) -----
 gs4_auth()  # User authentication (additional requirement)
-sheet_url <- "https://docs.google.com/spreadsheets/d/YOUR_SHEET_ID/edit"  # Replace with your sheet URL
+sheet_url <- "https://docs.google.com/spreadsheets/d/1iosMDfix6Hc_pr5yu70yfi09s175OzrNg3Otws2sDmY/edit?usp=sharing"  # Replace with your sheet URL
 
 # Retrieve all data (CRUD: retrieve)
 genetic_data <- read_sheet(sheet_url)
@@ -340,7 +343,7 @@ genetic_data <- read_sheet(sheet_url)
 # Parse into lists for menus (includes all color families and colors from sheet)
 family_options <- genetic_data %>% filter(locus == "family") %>% pull(option_text)
 color_options <- genetic_data %>% filter(locus == "color") %>% pull(option_text)
-agouti_options <- genetic_data %>% filter(locus == "agouti") %>% pull(option_text)
+# agouti_options <- genetic_data %>% filter(locus == "agouti") %>% pull(option_text)
 steel_harlequin_options <- genetic_data %>% filter(locus == "steel_harlequin") %>% pull(option_text)
 broken_options <- genetic_data %>% filter(locus == "broken") %>% pull(option_text)
 vienna_options <- genetic_data %>% filter(locus == "vienna") %>% pull(option_text)
@@ -358,7 +361,7 @@ silvering_genotypes <- genetic_data %>% filter(locus == "silvering") %>% pull(ge
 wideband_genotypes <- genetic_data %>% filter(locus == "wideband") %>% pull(genotype)
 lutino_genotypes <- genetic_data %>% filter(locus == "lutino") %>% pull(genotype)
 
-# ----- Collect new pattern selections -----
+# ----- Collect pattern selections -----
 display_menu("Doe", "steel/harlequin", steel_harlequin_options)
 doe_steel_choice <- as.integer(readline("Type a number: "))
 doe_steel <- switch(doe_steel_choice, "EsEs", "Esej", "Invalid")
@@ -427,7 +430,6 @@ lutino_off <- simulate_kits(doe_lutino, buck_lutino)
 # Update df to include new genotypes
 df <- data.frame(
   Color_Genotype = rep(color_off, length.out = kit_count),
-  Agouti_Genotype = rep(agouti_off, length.out = kit_count),
   Family_Genotype = rep(family_off, length.out = kit_count),
   Steel_Genotype = rep(steel_off, length.out = kit_count),
   Broken_Genotype = rep(broken_off, length.out = kit_count),
