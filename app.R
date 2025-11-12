@@ -234,6 +234,8 @@ df$Pattern_Phenotype <- dplyr::case_when(  # case_when is a dplyr function that 
   df$Pattern_Genotype == "EE" ~ "Charlie",
   df$Pattern_Genotype == "Ee" ~ "Broken",
   df$Pattern_Genotype == "ee" ~ "Self",
+  df$Harlequin_Genotype == "EsEs" ~ "Steel",
+  df$Harlequin_Genotype == "Esej" ~ "Harlequin",
   TRUE ~ "Unknown"
 )
 
