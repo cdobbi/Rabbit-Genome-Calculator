@@ -78,14 +78,7 @@ cat("🐇 Welcome to The Rabbit Genome Calculator!🧮\n")
 cat("****************************************************\n\n")
 cat("This calculator predicts the top 10 coat\n colors based on parent pairings.\n\n")
 
-# ----- Load all genetic data from Google Sheets (cloud DB) -----
-# gs4_auth()  # User authentication (additional requirement)
-# sheet_url <- "https://docs.google.com/spreadsheets/d/1iosMDfix6Hc_pr5yu70yfi09s175OzrNg3Otws2sDmY/edit?usp=sharing"  # Replace with your sheet URL
 
-# Retrieve all data (CRUD: retrieve)
-# genetic_data <- read_sheet(sheet_url)
-
-# Parse into lists for menus (hardcoded)
 family_options <- c(
   "  1. Full — C (CC)",
   "  2. Chinchilla — c(chd) (cchdcchd)",
